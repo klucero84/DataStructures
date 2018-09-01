@@ -11,34 +11,34 @@ namespace DataStructures
     /// <typeparam name="T">The datatype of this ArrayList.</typeparam>
     public class ArrayList<T> : IEnumerable<T>
     {
-        private readonly int initialArraySize;
-        private int arraySize;
-        private T[] array;
+        private readonly int _initialArraySize;
+        private int _arraySize;
+        private T[] _array;
 
         public int Length { get; private set; }
 
         /// <summary>
-        /// Time complexity: O(1) if initial is empty otherwise O(n).
+        /// Initialized a new Array. Time complexity: O(1) if initial is empty otherwise O(n).
         /// </summary>
         /// <param name="initalArraySize">The initial array size.</param>
-        /// <param name="initial">Initial values if any.</param>
-        public ArrayList(int initalArraySize = 2, IEnumerable<T> initial = null)
+        /// <param name="initial">Starting items</param>
+        public ArrayList(int initalArraySize = 2, IEnumerable<T> items = null)
         {
             if (initalArraySize < 2)
             {
                 throw new Exception("Initial array size must be greater than 1");
             }
 
-            initialArraySize = initalArraySize;
-            arraySize = initalArraySize;
-            array = new T[arraySize];
+            _initialArraySize = initalArraySize;
+            _arraySize = initalArraySize;
+            _array = new T[_arraySize];
 
-            if (initial == null)
+            if (items == null)
             {
                 return;
             }
 
-            foreach(var item in initial)
+            foreach(var item in items)
             {
                 Add(item);
             }
@@ -58,16 +58,16 @@ namespace DataStructures
         /// <param name="index">The index to write or read.</param>
         public T this[int index]
         {
-            get => itemAt(index);
-            set => setItem(index, value);
+            get => ItemAt(index);
+            set => SetItem(index, value);
         }
 
-        private T itemAt(int i)
+        private T ItemAt(int i)
         {
             if (i >= Length)
                 throw new System.Exception("Index exeeds array size");
 
-            return array[i];
+            return _array[i];
         }
 
         /// <summary>
@@ -76,9 +76,9 @@ namespace DataStructures
         /// </summary>
         public void Add(T item)
         {
-            grow();
+            Grow();
 
-            array[Length] = item;
+            _array[Length] = item;
             Length++;
         }
 
@@ -90,11 +90,11 @@ namespace DataStructures
         /// <param name="item">The item to insert.</param>
         public void InsertAt(int index, T item)
         {
-            grow();
+            Grow();
 
-            shift(index);
+            Shift(index);
 
-            array[index] = item;
+            _array[index] = item;
             Length++;
         }
 
@@ -102,9 +102,9 @@ namespace DataStructures
         /// Shift the position of elements right by one starting at this index.
         /// Creates a blank field at index.
         /// </summary>
-        private void shift(int index)
+        private void Shift(int index)
         {
-            Array.Copy(array, index, array, index + 1, Length - index);
+            Array.Copy(_array, index, _array, index + 1, Length - index);
         }
 
         /// <summary>
@@ -113,17 +113,17 @@ namespace DataStructures
         /// </summary>
         public void Clear()
         {
-            arraySize = initialArraySize;
-            array = new T[arraySize];
+            _arraySize = _initialArraySize;
+            _array = new T[_arraySize];
             Length = 0;
         }
 
-        private void setItem(int i, T item)
+        private void SetItem(int i, T item)
         {
             if (i >= Length)
                 throw new System.Exception("Index exeeds array size");
 
-            array[i] = item;
+            _array[i] = item;
         }
 
         /// <summary>
@@ -137,44 +137,44 @@ namespace DataStructures
                 throw new System.Exception("Index exeeds array size");
 
             //shift elements
-            for (var j = i; j < arraySize - 1; j++)
+            for (var j = i; j < _arraySize - 1; j++)
             {
-                array[j] = array[j + 1];
+                _array[j] = _array[j + 1];
             }
 
             Length--;
 
-            shrink();
+            Shrink();
         }
 
-        private void grow()
+        private void Grow()
         {
-            if (Length != arraySize)
+            if (Length != _arraySize)
             {
                 return;
             }
 
             //increase array size exponentially on demand
-            arraySize *= 2;
+            _arraySize *= 2;
 
-            var biggerArray = new T[arraySize];
-            Array.Copy(array, 0, biggerArray, 0, Length);
-            array = biggerArray;
+            var biggerArray = new T[_arraySize];
+            Array.Copy(_array, 0, biggerArray, 0, Length);
+            _array = biggerArray;
         }
 
-        private void shrink()
+        private void Shrink()
         {
-            if (Length != arraySize / 2 || arraySize == initialArraySize)
+            if (Length != _arraySize / 2 || _arraySize == _initialArraySize)
             {
                 return;
             }
 
             //reduce array by half 
-            arraySize /= 2;
+            _arraySize /= 2;
 
-            var smallerArray = new T[arraySize];
-            Array.Copy(array, 0, smallerArray, 0, Length);
-            array = smallerArray;
+            var smallerArray = new T[_arraySize];
+            Array.Copy(_array, 0, smallerArray, 0, Length);
+            _array = smallerArray;
         }
 
         IEnumerator IEnumerable.GetEnumerator()
@@ -184,7 +184,7 @@ namespace DataStructures
 
         public IEnumerator<T> GetEnumerator()
         {
-            return array.Take(Length).GetEnumerator();
+            return _array.Take(Length).GetEnumerator();
         }
     }
 

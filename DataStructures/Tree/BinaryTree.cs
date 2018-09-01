@@ -11,7 +11,7 @@ namespace DataStructures
     /// </summary>
     public class BinaryTree<T> : IEnumerable<T> where T : IComparable
     {
-        private BinaryTreeNode<T> root { get; set; }
+        private BinaryTreeNode<T> _root { get; set; }
 
         public int Count { get; private set; }
 
@@ -20,12 +20,12 @@ namespace DataStructures
         /// </summary>
         public bool HasItem(T value)
         {
-            if (root == null)
+            if (_root == null)
             {
                 return false;
             }
 
-            return Find(root, value) != null;
+            return Find(_root, value) != null;
         }
 
         /// <summary>
@@ -33,7 +33,7 @@ namespace DataStructures
         /// </summary>
         public int GetHeight()
         {
-            return GetHeight(root);
+            return GetHeight(_root);
         }
 
         /// <summary>
@@ -43,9 +43,9 @@ namespace DataStructures
         /// <summary>
         public void Insert(T parent, T child)
         {
-            if (root == null)
+            if (_root == null)
             {
-                root = new BinaryTreeNode<T>(null, child);
+                _root = new BinaryTreeNode<T>(null, child);
                 Count++;
                 return;
             }
@@ -57,7 +57,7 @@ namespace DataStructures
                 throw new Exception("Cannot find parent node");
             }
 
-            var exists = Find(root, child) != null;
+            var exists = Find(_root, child) != null;
 
             if (exists)
             {
@@ -106,7 +106,7 @@ namespace DataStructures
                 case null when node.Right == null:
                     if (node.Parent == null)
                     {
-                        root = null;
+                        _root = null;
                     }
                     else
                     {
@@ -187,7 +187,7 @@ namespace DataStructures
 
         private BinaryTreeNode<T> Find(T value)
         {
-            return root == null ? null : Find(root, value);
+            return _root == null ? null : Find(_root, value);
         }
 
         private BinaryTreeNode<T> Find(BinaryTreeNode<T> parent, T value)
@@ -222,7 +222,7 @@ namespace DataStructures
 
         public IEnumerator<T> GetEnumerator()
         {
-            return new BinaryTreeEnumerator<T>(root);
+            return new BinaryTreeEnumerator<T>(_root);
         }
 
     }

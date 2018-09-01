@@ -10,7 +10,7 @@ namespace DataStructures
     /// </summary>
     public class Tree<T> : IEnumerable<T> where T : IComparable
     {
-        private TreeNode<T> root { get; set; }
+        private TreeNode<T> _root { get; set; }
 
         public int Count { get; private set; }
 
@@ -19,12 +19,12 @@ namespace DataStructures
         /// </summary>
         public bool HasItem(T value)
         {
-            if (root == null)
+            if (_root == null)
             {
                 return false;
             }
 
-            return find(root, value) != null;
+            return Find(_root, value) != null;
         }
 
         /// <summary>
@@ -32,7 +32,7 @@ namespace DataStructures
         /// </summary>
         public int GetHeight()
         {
-            return getHeight(root);
+            return GetHeight(_root);
         }
 
         /// <summary>
@@ -40,21 +40,21 @@ namespace DataStructures
         /// </summary>
         public void Insert(T parent, T child) 
         {
-            if (root == null)
+            if (_root == null)
             {
-                root = new TreeNode<T>(null, child);
+                _root = new TreeNode<T>(null, child);
                 Count++;
                 return;
             }
 
-            var parentNode = find(parent);
+            var parentNode = Find(parent);
 
             if (parentNode == null)
             {
                 throw new ArgumentNullException();
             }
 
-            var exists = find(root, child) != null;
+            var exists = Find(_root, child) != null;
 
             if (exists)
             {
@@ -70,7 +70,7 @@ namespace DataStructures
         /// </summary>
         public void Delete(T value)
         {
-            delete(root.Value, value);
+            Delete(_root.Value, value);
         }
 
         /// <summary>
@@ -78,7 +78,7 @@ namespace DataStructures
         /// </summary>
         public void Clear()
         {
-            root = null;
+            _root = null;
             Count = 0;
         }
 
@@ -87,20 +87,20 @@ namespace DataStructures
         /// </summary>
         public IEnumerable<T> Children(T value)
         {
-            return find(value)?.Children.Select(x => x.Value);
+            return Find(value)?.Children.Select(x => x.Value);
         }
 
-        private TreeNode<T> find(T value)
+        private TreeNode<T> Find(T value)
         {
-            if (root == null)
+            if (_root == null)
             {
                 return null;
             }
 
-            return find(root, value);
+            return Find(_root, value);
         }
 
-        private int getHeight(TreeNode<T> node)
+        private int GetHeight(TreeNode<T> node)
         {
             if (node == null)
             {
@@ -111,7 +111,7 @@ namespace DataStructures
 
             foreach (var child in node.Children)
             {
-                var childHeight = getHeight(child);
+                var childHeight = GetHeight(child);
 
                 if (currentHeight < childHeight)
                 {
@@ -124,35 +124,35 @@ namespace DataStructures
             return currentHeight;
         }
 
-        private void delete(T parentValue, T value)
+        private void Delete(T parentValue, T value)
         {
-            var parent = find(parentValue);
+            var parent = Find(parentValue);
 
             if (parent == null)
             {
                 throw new Exception("Cannot find parent");
             }
 
-            var itemToRemove = find(parent, value);
+            var itemToRemove = Find(parent, value);
 
             if (itemToRemove == null)
             {
                 throw new Exception("Cannot find item");
             }
 
-            //if item is root
+            //if item is _root
             if (itemToRemove.Parent == null)
             {
                 if (itemToRemove.Children.Count() == 0)
                 {
-                    root = null;
+                    _root = null;
                 }
                 else
                 {
                     if (itemToRemove.Children.Count() == 1)
                     {
-                        root = itemToRemove.Children.DeleteFirst();
-                        root.Parent = null;
+                        _root = itemToRemove.Children.DeleteFirst();
+                        _root.Parent = null;
                     }
                     else
                     {
@@ -188,7 +188,7 @@ namespace DataStructures
 
         }
 
-        private TreeNode<T> find(TreeNode<T> parent, T value)
+        private TreeNode<T> Find(TreeNode<T> parent, T value)
         {
             if (parent.Value.CompareTo(value) == 0)
             {
@@ -197,7 +197,7 @@ namespace DataStructures
 
             foreach (var child in parent.Children)
             {
-                var result = find(child, value);
+                var result = Find(child, value);
 
                 if (result != null)
                 {
@@ -215,7 +215,7 @@ namespace DataStructures
 
         public IEnumerator<T> GetEnumerator()
         {
-            return new TreeEnumerator<T>(root);
+            return new TreeEnumerator<T>(_root);
            
         }
 
@@ -246,25 +246,25 @@ namespace DataStructures
 
     public class TreeEnumerator<T> : IEnumerator<T> where T : IComparable
     {
-        private readonly TreeNode<T> root;
+        private readonly TreeNode<T> _root;
         private Stack<TreeNode<T>> progress;
 
-        internal TreeEnumerator(TreeNode<T> root)
+        internal TreeEnumerator(TreeNode<T> _root)
         {
-            this.root = root;
+            this._root = _root;
         }
 
         public bool MoveNext()
         {
-            if (root == null)
+            if (_root == null)
             {
                 return false;
             }
 
             if (progress == null)
             {
-                progress = new Stack<TreeNode<T>>(root.Children);
-                Current = root.Value;
+                progress = new Stack<TreeNode<T>>(_root.Children);
+                Current = _root.Value;
                 return true;
             }
 
