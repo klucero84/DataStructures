@@ -227,20 +227,37 @@ namespace DataStructures
 
     }
 
-    internal class BinaryTreeNode<T> : IComparable where T : IComparable
+    public class BinaryTreeNode<T> : IComparable where T : IComparable
     {
         internal T Value { get; set; }
 
-        internal BinaryTreeNode<T> Parent { get; set; }
+        internal virtual BinaryTreeNode<T> _parent { get; set; }
+        internal virtual BinaryTreeNode<T> _left { get; set; }
+        internal virtual BinaryTreeNode<T> _right { get; set; }
+        
+        internal BinaryTreeNode<T> Parent
+        {
+            get { return _parent; }
+            set { _parent = value; }
+        }
 
-        internal BinaryTreeNode<T> Left { get; set; }
-        internal BinaryTreeNode<T> Right { get; set; }
+        internal BinaryTreeNode<T> Left
+        {
+            get { return _left; }
+            set { _left = value; }
+        }
+
+        internal BinaryTreeNode<T> Right
+        {
+            get { return _right; }
+            set { _right = value; }
+        }
 
         internal bool IsLeaf => Left == null && Right == null;
 
         internal BinaryTreeNode(BinaryTreeNode<T> parent, T value)
         {
-            Parent = parent;
+            _parent = parent;
             Value = value;
         }
 
@@ -250,27 +267,27 @@ namespace DataStructures
         }
     }
 
-    internal class BinaryTreeEnumerator<T> : IEnumerator<T> where T : IComparable
+    public class BinaryTreeEnumerator<T> : IEnumerator<T> where T : IComparable
     {
-        private readonly BinaryTreeNode<T> root;
+        internal readonly BinaryTreeNode<T> _root;
         private Stack<BinaryTreeNode<T>> progress;
 
-        internal BinaryTreeEnumerator(BinaryTreeNode<T> root)
+        public BinaryTreeEnumerator(BinaryTreeNode<T> root)
         {
-            this.root = root;
+            _root = root;
         }
 
         public bool MoveNext()
         {
-            if (root == null)
+            if (_root == null)
             {
                 return false;
             }
 
             if (progress == null)
             {
-                progress = new Stack<BinaryTreeNode<T>>(new[] { root.Left, root.Right }.Where(x => x != null));
-                Current = root.Value;
+                progress = new Stack<BinaryTreeNode<T>>(new[] { _root.Left, _root.Right }.Where(x => x != null));
+                Current = _root.Value;
                 return true;
             }
 
